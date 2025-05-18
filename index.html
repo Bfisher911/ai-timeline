@@ -3,76 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI History Timeline (iFrame)</title>
+    <title>AI History Timeline</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+        :root {
+            --symbolic-color: #6a7fc8;
+            --neural-color: #e85d75;
+            --modern-color: #53bbb4;
+            --winter-color: #e9b872;
+            --line-color: #ddd;
+            --text-color: #333;
+            --background-color: #f9f9f9;
+            --card-background: white;
+            --shadow-color: rgba(0, 0, 0, 0.1);
         }
         
-        .container {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        
+        .timeline-container {
             max-width: 1200px;
             margin: 0 auto;
-            text-align: center;
         }
         
         h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        
-        .iframe-container {
-            position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 150%; /* Aspect ratio for the iframe (adjust as needed) */
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            background-color: white;
-        }
-        
-        .caption {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #666;
             text-align: center;
+            margin-bottom: 40px;
+            color: #333;
         }
         
-        @media (min-width: 768px) {
-            .iframe-container {
-                padding-bottom: 120%; /* Adjust aspect ratio for larger screens */
+        .timeline {
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: var(--line-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 10px;
+        }
+        
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            margin-bottom: 30px;
+        }
+        
+        .left {
+            left: 0;
+        }
+        
+        .right {
+            left: 50%;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -12px;
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 0 4px white;
+        }
+        
+        .left::after {
+            right: -12px;
+        }
+        
+        .right::after {
+            left: -13px;
+        }
+        
+        .early-symbolic::after {
+            background-color: var(--symbolic-color);
+        }
+        
+        .ai-winter::after {
+            background-color: var(--winter-color);
+        }
+        
+        .statistical-ml::after {
+            background-color: var(--neural-color);
+        }
+        
+        .deep-learning::after {
+            background-color: var(--modern-color);
+        }
+        
+        .content {
+            padding: 20px 25px;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+        
+        .content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .year {
+            display: inline-block;
+            padding: 5px 15px;
+            background-color: #333;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        
+        .early-symbolic .year {
+            background-color: var(--symbolic-color);
+        }
+        
+        .ai-winter .year {
+            background-color: var(--winter-color);
+        }
+        
+        .statistical-ml .year {
+            background-color: var(--neural-color);
+        }
+        
+        .deep-learning .year {
+            background-color: var(--modern-color);
+        }
+        
+        h3 {
+            margin-bottom: 10px;
+        }
+        
+        p {
+            font-size: 0.95em;
+        }
+        
+        .right .content {
+            padding-left: 25px;
+        }
+        
+        .left .content {
+            padding-right: 25px;
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 0 auto 40px auto;
+            max-width: 600px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 15px 10px 15px;
+            font-size: 0.9em;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
             }
-        }
-        
-        @media (min-width: 1024px) {
-            .iframe-container {
-                padding-bottom: 90%; /* Adjust aspect ratio for even larger screens */
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+                left: 0;
+            }
+            
+            .timeline-item::after {
+                left: 19px;
+                top: 25px;
+            }
+            
+            .left::after, .right::after {
+                left: 19px;
+            }
+            
+            .right {
+                left: 0%;
+            }
+            
+            .left .content, .right .content {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>The Evolution of Artificial Intelligence (1943-Present)</h1>
-        <div class="iframe-container">
-            <iframe src="/api/artifact/ai-timeline" allowfullscreen></iframe>
+    <div class="timeline-container">
+        <h1>The Evolution of Artificial Intelligence</h1>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--symbolic-color);"></div>
+                <span>Early Symbolic AI</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--winter-color);"></div>
+                <span>AI Winter Periods</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--neural-color);"></div>
+                <span>Statistical ML</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--modern-color);"></div>
+                <span>Deep Learning Era</span>
+            </div>
         </div>
-        <div class="caption">
-            Interactive timeline showing key milestones in the development of artificial intelligence.
-            <br>Scroll within the timeline to explore all events.
+        
+        <div class="timeline">
+            <div class="timeline-item left early-symbolic">
+                <div class="content">
+                    <div class="year">1943</div>
+                    <h3>McCulloch & Pitts Neural Network</h3>
+                    <p>First mathematical model of a brain cell that could compute logical functions</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item right early-symbolic">
+                <div class="content">
+                    <div class="year">1950</div>
+                    <h3>Turing Test Proposed</h3>
+                    <p>Shifted focus from "Can machines think?" to observable behavior</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left early-symbolic">
+                <div class="content">
+                    <div class="year">1956</div>
+                    <h3>Dartmouth Workshop</h3>
+                    <p>Term "Artificial Intelligence" coined; field formally established</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item right early-symbolic">
+                <div class="content">
+                    <div class="year">1966</div>
+                    <h3>ELIZA Chatbot</h3>
+                    <p>Revealed human tendency to attribute understanding to simple pattern-matching</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left ai-winter">
+                <div class="content">
+                    <div class="year">1973</div>
+                    <h3>"Lighthill Report"</h3>
+                    <p>Triggered UK funding cuts, contributing to first AI Winter</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item right early-symbolic">
+                <div class="content">
+                    <div class="year">1980</div>
+                    <h3>Expert Systems Emerge</h3>
+                    <p>MYCIN, DENDRAL showed promise of rule-based knowledge representation</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left ai-winter">
+                <div class="content">
+                    <div class="year">1987</div>
+                    <h3>First AI Winter Deepens</h3>
+                    <p>Expert systems proved costly to maintain and brittle outside narrow domains</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item right early-symbolic">
+                <div class="content">
+                    <div class="year">1997</div>
+                    <h3>Deep Blue Defeats Kasparov</h3>
+                    <p>Chess champion falls to specialized computation, marking symbolic AI victory</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left statistical-ml">
+                <div class="content">
+                    <div class="year">2005</div>
+                    <h3>Statistical Methods Rise</h3>
+                    <p>Machine learning begins outperforming rule-based systems in many applications</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item right deep-learning">
+                <div class="content">
+                    <div class="year">2012</div>
+                    <h3>AlexNet & ImageNet</h3>
+                    <p>Deep learning dramatically improves computer vision, revitalizing neural networks</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left deep-learning">
+                <div class="content">
+                    <div class="year">2014</div>
+                    <h3>GANs Introduced</h3>
+                    <p>Generative models enable AI to create realistic synthetic images</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item right deep-learning">
+                <div class="content">
+                    <div class="year">2017</div>
+                    <h3>Transformer Architecture</h3>
+                    <p>"Attention is All You Need" paper revolutionizes sequence modeling</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left deep-learning">
+                <div class="content">
+                    <div class="year">2020</div>
+                    <h3>GPT-3 Demonstrates Scale</h3>
+                    <p>175 billion parameters show that massive models exhibit emergent capabilities</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item right deep-learning">
+                <div class="content">
+                    <div class="year">2022</div>
+                    <h3>Stable Diffusion & ChatGPT</h3>
+                    <p>Generative AI enters mainstream awareness and application</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left deep-learning">
+                <div class="content">
+                    <div class="year">2023+</div>
+                    <h3>Multimodal Models Emerge</h3>
+                    <p>Systems integrate text, vision, audio in single architecture</p>
+                </div>
+            </div>
         </div>
     </div>
 </body>
